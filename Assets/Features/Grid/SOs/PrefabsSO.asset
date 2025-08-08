@@ -1,0 +1,15 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd2700fd95cbab549b94425fa2a8f709, type: 3}
+  m_Name: PrefabsSO
+  m_EditorClassIdentifier: 
+  vertexPrefab: {fileID: 532340844139848300, guid: 725fcd0da68e0b54ca6ec4c31c5d6992, type: 3}
