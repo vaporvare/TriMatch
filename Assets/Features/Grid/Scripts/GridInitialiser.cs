@@ -4,19 +4,14 @@ public class GridInitialiser : MonoBehaviour
 {
     [Header("Grid Settings")]
     public PrefabsSO prefabsSO;
-    GameObject vertextprefab; //assigned via prefabSO
+    GameObject vertextprefab; // assigned via prefabSO
     public int columnsCount;
     [HideInInspector] public int rowsCount;
 
     private Camera mainCamera;
     private Vector3 safeBottomLeft;
-    private float spacing;
+    public float spacing;
 
-
-    void Awake()
-    {
-
-    }
     void Start()
     {
         CacheReferences();
@@ -25,7 +20,6 @@ public class GridInitialiser : MonoBehaviour
         SpawnGrid();
     }
 
-    // Validate input values to prevent runtime errors
     bool ValidateInputs()
     {
         if (vertextprefab == null)
@@ -43,15 +37,13 @@ public class GridInitialiser : MonoBehaviour
         return true;
     }
 
-    // Cache camera reference and calculate bottom-left position in world space
     void CacheReferences()
     {
         mainCamera = Camera.main;
         vertextprefab = prefabsSO.vertexPrefab;
-        rowsCount = columnsCount; // Assuming a square grid for simplicity
+        rowsCount = columnsCount; // square grid
     }
 
-    // Converts the safe area rectangle to world space coordinates
     void CalculateSafeAreaBounds()
     {
         Rect safeArea = Screen.safeArea;
@@ -63,26 +55,36 @@ public class GridInitialiser : MonoBehaviour
         Vector3 safeTopRight = mainCamera.ScreenToWorldPoint(topRightScreen);
 
         spacing = (safeTopRight.x - safeBottomLeft.x) / (columnsCount - 1);
-
     }
 
-    // Spawn the grid of spheres using calculated spacing
     void SpawnGrid()
     {
+        // Calculate total grid size
+        float gridWidth = (columnsCount - 1) * spacing;
+        float gridHeight = (rowsCount - 1) * spacing;
+
+        // Center position in world space (screen center in safe area)
+        Vector3 safeCenterScreen = new Vector3(
+            Screen.safeArea.center.x,
+            Screen.safeArea.center.y,
+            mainCamera.nearClipPlane + 10
+        );
+        Vector3 safeCenterWorld = mainCamera.ScreenToWorldPoint(safeCenterScreen);
+
+        // Adjust start position so grid is centered
+        Vector3 startPos = new Vector3(
+            safeCenterWorld.x - gridWidth / 2f,
+            safeCenterWorld.y - gridHeight / 2f,
+            0f
+        );
+
         for (int row = 0; row < rowsCount; row++)
         {
             for (int col = 0; col < columnsCount; col++)
             {
-                Vector3 spawnPos = CalculateWorldPosition(col, row);
+                Vector3 spawnPos = startPos + new Vector3(col * spacing, row * spacing, 0f);
                 Instantiate(vertextprefab, spawnPos, Quaternion.identity);
             }
         }
-    }
-
-    Vector3 CalculateWorldPosition(int col, int row)
-    {
-        float x = safeBottomLeft.x + col * spacing;
-        float y = safeBottomLeft.y + row * spacing;
-        return new Vector3(x, y, 0f);
     }
 }
